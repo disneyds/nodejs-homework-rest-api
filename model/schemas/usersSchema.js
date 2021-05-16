@@ -2,6 +2,7 @@
 const { Schema, model } = require('mongoose')
 const bcrypt = require('bcryptjs')
 const { subscriptions } = require('../../helpers/subscriptions')
+const { nanoid } = require('nanoid')
 require('dotenv').config()
 const SALT_FACTOR = Number(process.env.SALT_FACTOR)
 
@@ -24,10 +25,23 @@ const usersSchema = new Schema(
       },
       default: subscriptions.STARTER
     },
+  name: {
+    type: String,
+    default: 'Guest',
+    },
   token: {
     type: String,
     default: null,
-  }
+    },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verifyToken: {
+    type: String,
+    required: [true, 'Verify token is required'],
+    default: nanoid()
+  },
 } , {
     versionKey: false,
     timestamps: true,

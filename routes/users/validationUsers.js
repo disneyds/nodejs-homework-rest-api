@@ -3,6 +3,7 @@ const { subscriptions } = require('../../helpers/subscriptions')
 
 const signupUserSchema = Joi.object({
   email: Joi.string().email().required(),
+  name: Joi.string().max(16),
   password: Joi.string().min(6).required(),
   subscription: Joi.string()
 })
