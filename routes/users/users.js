@@ -8,7 +8,9 @@ const {
   getCurrentUser,
   updateSubscriptionUser,
   updateAvatar,
-  updateCloudAvatar
+  updateCloudAvatar,
+  emailVerify,
+  repeatEmailVerify
 } = require('../../controllers/users')
 const {
   validateSignupUser,
@@ -24,5 +26,9 @@ router.post('/logout', guard, logoutUser)
 router.get('/current', guard, getCurrentUser)
 router.patch('/', guard, validateUpdateSubUser, updateSubscriptionUser)
 router.patch('/avatars', guard, uploadAvatar.single('avatar'), updateAvatar /* updateCloudAvatar */ )
+
+
+router.get('/verify/:token', emailVerify)
+router.post('/verify', repeatEmailVerify)
 
 module.exports = router
