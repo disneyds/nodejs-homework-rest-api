@@ -2,6 +2,7 @@
 const { Schema, model } = require('mongoose')
 const bcrypt = require('bcryptjs')
 const { subscriptions } = require('../../helpers/subscriptions')
+const gravatar = require('gravatar')
 const { nanoid } = require('nanoid')
 require('dotenv').config()
 const SALT_FACTOR = Number(process.env.SALT_FACTOR)
@@ -30,6 +31,16 @@ const usersSchema = new Schema(
     default: 'Guest',
     },
   token: {
+    type: String,
+    default: null,
+  },
+  avatarURL: {
+    type: String,
+    default: function () {
+      return gravatar.url(this.email, {s:'250'}, true)
+    }
+  },
+  idCloudAvatar: {
     type: String,
     default: null,
     },

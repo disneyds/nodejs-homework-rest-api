@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const Users = require('../model/users')
 const httpCode = require('../helpers/httpCode')
+const {saveUserAvatar, saveUserAvatarToCloud} = require('../helpers/saveUserAvatar')
 const EmailService = require('../services/email')
 require('dotenv').config()
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
@@ -107,6 +108,38 @@ const updateSubscriptionUser = async (req, res, next) => {
   }
 }
 
+const updateAvatar = async (req, res, next) => {
+  try {
+    const { id, email, subscription } = req.user
+    const avatarURL = await saveUserAvatar(req)
+    await Users.updateAvatar(id, avatarURL)
+
+    return res.status(httpCode.OK).json({
+      status: 'success',
+      code: httpCode.OK,
+      data: { email, subscription, avatarURL }
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const updateCloudAvatar = async (req, res, next) => {
+  try {
+    const { id, email, subscription } = req.user
+    const { idCloudAvatar, avatarURL } = await saveUserAvatarToCloud(req)
+    await Users.updateAvatar(id, avatarURL, idCloudAvatar)
+
+    return res.status(httpCode.OK).json({
+      status: 'success',
+      code: httpCode.OK,
+      data: { email, subscription, avatarURL, idCloudAvatar }
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 const emailVerify = async (req, res, next) => {
   try {
     const user = await Users.findUserByVerifyToken(req.params.token)
@@ -164,6 +197,8 @@ module.exports = {
   logoutUser,
   getCurrentUser,
   updateSubscriptionUser,
+  updateAvatar,
+  updateCloudAvatar,
   emailVerify,
   repeatEmailVerify
 }
